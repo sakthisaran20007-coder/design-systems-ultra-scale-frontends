@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Production-grade responsive developer portfolio of Alex Rivera, Principal Frontend Engineer & CSS Architect. Features advanced CSS3, Bento-box Grid, Container Queries, OKLCH tokens, fluid typography, and dynamic theming." />
+  <meta property="og:title" content="Alex Rivera | Principal Frontend Engineer & CSS Architect" />
+  <meta property="og:description" content="Production-grade responsive developer portfolio with advanced CSS3, Bento-box Grid, Container Queries, OKLCH tokens, and dynamic theming." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <title>Alex Rivera | Principal Frontend Engineer & CSS Architect</title>
+
+  <style>
+    /* ==========================================================================
+       1. DESIGN SYSTEM TOKEN ARCHITECTURE (CSS CUSTOM PROPERTIES)
+       ========================================================================== */
+    :root {
+      /* OKLCH-derived core color palette */
+      --color-brand-hue: 255;
+      --color-brand-chroma: 0.22;
+      --color-brand: oklch(0.68 var(--color-brand-chroma) var(--color-brand-hue));
+      --color-brand-hover: oklch(0.74 var(--color-brand-chroma) var(--color-brand-hue));
+      --color-accent: oklch(0.78 0.18 160);
+
+      /* Dark Theme Tokens (Default) */
+      --bg-canvas: oklch(0.13 0.02 var(--color-brand-hue));
+      --bg-surface: oklch(0.17 0.025 var(--color-brand-hue));
+      --bg-surface-elevated: oklch(0.21 0.03 var(--color-brand-hue));
+      --bg-surface-glass: color-mix(in oklch, var(--bg-surface) 75%, transparent);
+
+      --border-subtle: oklch(0.27 0.03 var(--color-brand-hue));
+      --border-strong: oklch(0.38 0.04 var(--color-brand-hue));
+      --border-accent: color-mix(in oklch, var(--color-brand) 45%, transparent);
+
+      --text-primary: oklch(0.98 0.005 var(--color-brand-hue));
+      --text-secondary: oklch(0.75 0.02 var(--color-brand-hue));
+      --text-tertiary: oklch(0.55 0.03 var(--color-brand-hue));
+      --text-brand: oklch(0.78 0.15 var(--color-brand-hue));
+
+      --card-highlight: radial-gradient(
+        600px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
+        color-mix(in oklch, var(--color-brand) 16%, transparent),
+        transparent 45%
+      );
+
+      --shadow-sm: 0 2px 4px oklch(0 0 0 / 0.2);
+      --shadow-md: 0 8px 28px -6px oklch(0 0 0 / 0.4);
+      --shadow-glow: 0 0 35px -5px color-mix(in oklch, var(--color-brand) 35%, transparent);
+
+      /* Fluid Typography Matrix */
+      --step--1: clamp(0.80rem, 0.76rem + 0.20vw, 0.90rem);
+      --step-0:  clamp(0.95rem, 0.88rem + 0.35vw, 1.125rem);
+      --step-1:  clamp(1.20rem, 1.05rem + 0.75vw, 1.50rem);
+      --step-2:  clamp(1.50rem, 1.25rem + 1.25vw, 2.10rem);
+      --step-3:  clamp(2.00rem, 1.60rem + 2.00vw, 3.00rem);
+      --step-4:  clamp(2.60rem, 1.95rem + 3.25vw, 4.25rem);
+
+      /* Layout Geometry & Spacing */
+      --space-2xs: clamp(0.25rem, 0.20rem + 0.25vw, 0.375rem);
+      --space-xs:  clamp(0.50rem, 0.45rem + 0.25vw, 0.75rem);
+      --space-s:   clamp(0.75rem, 0.70rem + 0.25vw, 1.00rem);
+      --space-m:   clamp(1.00rem, 0.90rem + 0.50vw, 1.50rem);
+      --space-l:   clamp(1.50rem, 1.30rem + 1.00vw, 2.50rem);
+      --space-xl:  clamp(2.50rem, 2.00rem + 2.50vw, 4.50rem);
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+
+      --max-width: 1240px;
+      --transition-base: 220ms cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-theme: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    /* Light Theme Token Overrides */
+    [data-theme="light"] {
+      --bg-canvas: oklch(0.985 0.005 var(--color-brand-hue));
+      --bg-surface: oklch(0.95 0.01 var(--color-brand-hue));
+      --bg-surface-elevated: oklch(1 0 0);
+      --bg-surface-glass: color-mix(in oklch, var(--bg-surface-elevated) 82%, transparent);
+
+      --border-subtle: oklch(0.88 0.015 var(--color-brand-hue));
+      --border-strong: oklch(0.78 0.025 var(--color-brand-hue));
+      --border-accent: color-mix(in oklch, var(--color-brand) 35%, transparent);
+
+      --text-primary: oklch(0.15 0.02 var(--color-brand-hue));
+      --text-secondary: oklch(0.38 0.03 var(--color-brand-hue));
+      --text-tertiary: oklch(0.56 0.03 var(--color-brand-hue));
+      --text-brand: oklch(0.48 0.22 var(--color-brand-hue));
+
+      --card-highlight: radial-gradient(
+        600px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
+        color-mix(in oklch, var(--color-brand) 9%, transparent),
+        transparent 45%
+      );
+
+      --shadow-sm: 0 2px 4px oklch(0 0 0 / 0.06);
+      --shadow-md: 0 8px 24px -4px oklch(0 0 0 / 0.08);
+      --shadow-glow: 0 0 35px -5px color-mix(in oklch, var(--color-brand) 20%, transparent);
+    }
+
+    /* ==========================================================================
+       2. MODERN RESET & GLOBAL DEFAULTS
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 100%;
+      color-scheme: dark light;
+      scroll-behavior: smooth;
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      transition: var(--transition-theme);
+    }
+
+    body {
+      line-height: 1.6;
+      font-size: var(--step-0);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background-image:
+        radial-gradient(at 100% 0%, color-mix(in oklch, var(--color-brand) 10%, transparent) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, color-mix(in oklch, var(--color-accent) 8%, transparent) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    img, svg {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    input[type="range"] {
+      accent-color: var(--color-brand);
+      cursor: pointer;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--color-brand);
+      outline-offset: 4px;
+      border-radius: var(--radius-sm);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ==========================================================================
+       3. SITE HEADER & NAVIGATION (FLEX 3-ZONE CONTRACT)
+       ========================================================================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background-color: var(--bg-surface-glass);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: var(--transition-theme);
+
+      & .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: var(--max-width);
+        margin-inline: auto;
+        padding: var(--space-s) var(--space-m);
+        gap: 2rem;
+      }
+
+      /* Zone 1: Wordmark */
+      & .brand-signature {
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
+        font-weight: 700;
+        font-size: var(--step-1);
+        letter-spacing: -0.03em;
+        white-space: nowrap;
+        flex-shrink: 0;
+
+        & .brand-glyph {
+          width: 24px;
+          height: 24px;
+          border-radius: var(--radius-sm);
+          background: linear-gradient(135deg, var(--color-brand), var(--color-accent));
+          display: grid;
+          place-items: center;
+          color: white;
+          font-size: 12px;
+          font-weight: 800;
+        }
+      }
+
+      /* Zone 2: Navigation Links */
+      & .nav-links {
+        display: flex;
+        align-items: center;
+        gap: var(--space-m);
+        list-style: none;
+
+        & a {
+          color: var(--text-secondary);
+          font-weight: 500;
+          font-size: var(--step--1);
+          white-space: nowrap;
+          flex-shrink: 0;
+          transition: color var(--transition-base);
+
+          &:hover {
+            color: var(--text-primary);
+          }
+        }
+      }
+
+      /* Zone 3: Actions */
+      & .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-s);
+        flex-shrink: 0;
+      }
+    }
+
+    /* Theme Switcher Toggle */
+    .theme-toggle {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-subtle);
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      display: grid;
+      place-items: center;
+      transition: transform var(--transition-base), border-color var(--transition-base), background-color var(--transition-base);
+
+      &:hover {
+        border-color: var(--color-brand);
+        transform: scale(1.06);
+      }
+
+      & svg {
+        width: 19px;
+        height: 19px;
+        transition: transform 0.4s ease;
+      }
+
+      & .moon-icon { display: none; }
+      & .sun-icon { display: block; }
+    }
+
+    [data-theme="light"] .theme-toggle {
+      & .moon-icon { display: block; }
+      & .sun-icon { display: none; }
+    }
+
+    /* Mobile Navigation Drawer Trigger */
+    .mobile-nav-toggle {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      background-color: var(--bg-surface);
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+
+      & span {
+        width: 20px;
+        height: 2px;
+        background-color: var(--text-primary);
+        transition: transform 0.25s, opacity 0.25s;
+      }
+    }
+
+    /* ==========================================================================
+       4. HERO SECTION
+       ========================================================================== */
+    .hero {
+      padding: var(--space-xl) var(--space-m) var(--space-l);
+      max-width: var(--max-width);
+      margin-inline: auto;
+      width: 100%;
+
+      & .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: var(--space-2xs) var(--space-s);
+        background-color: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-full);
+        font-size: var(--step--1);
+        color: var(--text-secondary);
+        margin-bottom: var(--space-m);
+
+        & .status-text {
+          font-weight: 500;
+        }
+      }
+
+      & .hero-title {
+        font-size: var(--step-4);
+        line-height: 1.08;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        margin-bottom: var(--space-m);
+        max-width: 20ch;
+        text-wrap: balance;
+
+        & .gradient-text {
+          background: linear-gradient(135deg, var(--text-primary) 30%, var(--color-brand));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+      }
+
+      & .hero-lead {
+        font-size: var(--step-1);
+        color: var(--text-secondary);
+        max-width: 52ch;
+        line-height: 1.5;
+        margin-bottom: var(--space-l);
+      }
+
+      & .hero-cta-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-s);
+        align-items: center;
+      }
+
+      /* KPI Proof Strip Below Hero */
+      & .hero-kpi-strip {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--space-m);
+        margin-top: var(--space-xl);
+        padding-top: var(--space-l);
+        border-top: 1px solid var(--border-subtle);
+
+        & .kpi-item {
+          & .kpi-value {
+            font-size: var(--step-2);
+            font-weight: 800;
+            color: var(--color-brand);
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+          }
+
+          & .kpi-label {
+            font-size: var(--step--1);
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+          }
+        }
+      }
+    }
+
+    /* Button Micro-System */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.4rem;
+      font-size: var(--step-0);
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      transition: all var(--transition-base);
+      white-space: nowrap;
+      flex-shrink: 0;
+
+      &.btn-primary {
+        background-color: var(--color-brand);
+        color: oklch(1 0 0);
+        box-shadow: var(--shadow-sm);
+
+        &:hover {
+          background-color: var(--color-brand-hover);
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-glow);
+        }
+      }
+
+      &.btn-secondary {
+        background-color: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        color: var(--text-primary);
+
+        &:hover {
+          background-color: var(--bg-surface-elevated);
+          border-color: var(--border-strong);
+          transform: translateY(-2px);
+        }
+      }
+
+      &.btn-sm {
+        padding: 0.4rem 0.8rem;
+        font-size: var(--step--1);
+        border-radius: var(--radius-sm);
+      }
+    }
+
+    /* ==========================================================================
+       5. BENTO SHOWCASE GRID (MACRO ARCHITECTURE & SUBGRID)
+       ========================================================================== */
+    .section-wrap {
+      max-width: var(--max-width);
+      margin-inline: auto;
+      padding: var(--space-l) var(--space-m) var(--space-xl);
+      width: 100%;
+    }
+
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2xs);
+      margin-bottom: var(--space-l);
+
+      & .section-tag {
+        color: var(--text-brand);
+        text-transform: uppercase;
+        font-size: var(--step--1);
+        letter-spacing: 0.12em;
+        font-weight: 700;
+      }
+
+      & .section-title {
+        font-size: var(--step-3);
+        letter-spacing: -0.03em;
+        font-weight: 700;
+        text-wrap: balance;
+      }
+    }
+
+    /* Filter Bar Controls */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: 4px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      width: fit-content;
+      margin-bottom: var(--space-l);
+      overflow-x: auto;
+      max-width: 100%;
+
+      & .filter-btn {
+        padding: 0.45rem 1rem;
+        font-size: var(--step--1);
+        font-weight: 500;
+        border-radius: var(--radius-sm);
+        color: var(--text-secondary);
+        white-space: nowrap;
+        transition: all var(--transition-base);
+
+        &:hover {
+          color: var(--text-primary);
+        }
+
+        &.active {
+          background-color: var(--bg-surface-elevated);
+          color: var(--text-primary);
+          box-shadow: var(--shadow-sm);
+          font-weight: 600;
+        }
+      }
+    }
+
+    /* Bento 12-Column Grid */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--space-m);
+      grid-auto-flow: dense;
+    }
+
+    /* Bento Card Base & Container Queries */
+    .bento-card {
+      container-type: inline-size;
+      container-name: bento-card;
+      position: relative;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-m);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base), opacity 0.3s ease;
+
+      /* Mouse hover glow mask */
+      &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--card-highlight);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      &:hover {
+        border-color: var(--border-accent);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+
+        &::before {
+          opacity: 1;
+        }
+      }
+
+      &.is-hidden {
+        display: none;
+      }
+    }
+
+    /* Grid Span Matrix */
+    .bento-card.col-8  { grid-column: span 8; }
+    .bento-card.col-4  { grid-column: span 4; }
+    .bento-card.col-6  { grid-column: span 6; }
+    .bento-card.col-12 { grid-column: span 12; }
+
+    /* Bento Card Inner Anatomy */
+    .card-meta-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-s);
+
+      & .category-label {
+        font-size: var(--step--1);
+        color: var(--text-brand);
+        font-weight: 600;
+      }
+
+      & .metric-badge {
+        font-size: var(--step--1);
+        color: var(--text-secondary);
+        font-variant-numeric: tabular-nums;
+      }
+    }
+
+    .card-body {
+      & h3 {
+        font-size: var(--step-2);
+        letter-spacing: -0.02em;
+        margin-bottom: var(--space-xs);
+        color: var(--text-primary);
+      }
+
+      & p {
+        color: var(--text-secondary);
+        font-size: var(--step-0);
+        margin-bottom: var(--space-m);
+        line-height: 1.5;
+      }
+    }
+
+    /* Unboxed Typographic Metadata & Tags */
+    .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: var(--step--1);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-m);
+      flex-wrap: wrap;
+
+      & .meta-dot {
+        opacity: 0.5;
+      }
+    }
+
+    /* Card Interactive Action Link */
+    .card-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-brand);
+      font-weight: 600;
+      font-size: var(--step-0);
+      margin-top: auto;
+      padding-top: var(--space-s);
+
+      & svg {
+        transition: transform var(--transition-base);
+      }
+
+      &:hover svg {
+        transform: translateX(4px);
+      }
+    }
+
+    /* Metric Display (Core Web Vitals) */
+    .metric-display {
+      font-size: clamp(2.4rem, 4vw, 3.6rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: var(--color-brand);
+      margin-bottom: var(--space-xs);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-s);
+      margin-top: var(--space-s);
+      padding-top: var(--space-s);
+      border-top: 1px solid var(--border-subtle);
+
+      & .metric-sub {
+        & .val {
+          font-weight: 700;
+          color: var(--text-primary);
+          font-size: var(--step-1);
+          font-variant-numeric: tabular-nums;
+        }
+        & .lbl {
+          font-size: var(--step--1);
+          color: var(--text-tertiary);
+        }
+      }
+    }
+
+    /* Code Mockup Visual Frame */
+    .mockup-frame {
+      position: relative;
+      background-color: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-s);
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: var(--step--1);
+      color: var(--text-secondary);
+      overflow: hidden;
+
+      & .mockup-bar {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 0.4rem;
+
+        & span {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background-color: var(--border-strong);
+        }
+      }
+
+      & .code-line {
+        line-height: 1.4;
+        white-space: nowrap;
+
+        & .keyword { color: var(--color-brand); }
+        & .property { color: var(--text-primary); }
+        & .val { color: var(--color-accent); }
+      }
+    }
+
+    /* ==========================================================================
+       6. CONTAINER QUERIES LAB & INTERACTIVE RESIZER
+       ========================================================================== */
+    .interactive-resizer-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-s);
+      width: 100%;
+
+      & .resizer-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-s);
+        flex-wrap: wrap;
+
+        & .slider-label {
+          font-size: var(--step--1);
+          color: var(--text-secondary);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        & .preset-buttons {
+          display: flex;
+          gap: 4px;
+        }
+      }
+
+      & .resizable-sandbox-container {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        border: 1px dashed var(--border-strong);
+        border-radius: var(--radius-md);
+        padding: 8px;
+        background-color: var(--bg-canvas);
+        transition: width 0.2s ease-out;
+      }
+    }
+
+    /* Container query subject */
+    .responsive-demo-card {
+      container-type: inline-size;
+      container-name: demo-card;
+      background-color: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: var(--space-s);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+
+      & .demo-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: var(--step--1);
+        color: var(--text-brand);
+        font-weight: 600;
+      }
+
+      & .demo-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+
+        & h4 {
+          font-size: var(--step-0);
+          color: var(--text-primary);
+        }
+
+        & p {
+          font-size: var(--step--1);
+          color: var(--text-secondary);
+        }
+      }
+
+      & .demo-badge {
+        font-size: 11px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background-color: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        width: fit-content;
+      }
+    }
+
+    /* Container query rules for the demo card */
+    @container demo-card (min-width: 440px) {
+      .responsive-demo-card {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-m);
+      }
+    }
+
+    /* Container Queries on Bento Card */
+    @container bento-card (min-width: 500px) {
+      .card-split {
+        display: grid;
+        grid-template-columns: 1.25fr 1fr;
+        gap: var(--space-m);
+        align-items: center;
+      }
+    }
+
+    /* ==========================================================================
+       7. LIVE TOKEN SYNTHESIZER (OKLCH CUSTOMIZER)
+       ========================================================================== */
+    .token-synthesizer {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-s);
+      padding: var(--space-s);
+      background-color: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+
+      & .token-control-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        & .token-meta {
+          display: flex;
+          justify-content: space-between;
+          font-size: var(--step--1);
+          color: var(--text-secondary);
+
+          & .val {
+            font-variant-numeric: tabular-nums;
+            font-weight: 600;
+            color: var(--text-primary);
+          }
+        }
+      }
+
+      & .palette-preview-strip {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+        height: 28px;
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+
+        & .swatch {
+          height: 100%;
+          transition: background-color 0.2s ease;
+        }
+      }
+    }
+
+    /* ==========================================================================
+       8. TECHNICAL ENGINE MATRIX
+       ========================================================================== */
+    .arch-specs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-m);
+      margin-top: var(--space-m);
+
+      & .spec-card {
+        padding: var(--space-m);
+        background: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        transition: border-color var(--transition-base), transform var(--transition-base);
+
+        &:hover {
+          border-color: var(--border-strong);
+          transform: translateY(-2px);
+        }
+
+        & h4 {
+          font-size: var(--step-1);
+          margin-bottom: var(--space-xs);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: var(--text-primary);
+        }
+
+        & p {
+          color: var(--text-secondary);
+          font-size: var(--step--1);
+          line-height: 1.5;
+        }
+      }
+    }
+
+    /* ==========================================================================
+       9. TRACK RECORD & TIMELINE
+       ========================================================================== */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-m);
+      margin-top: var(--space-m);
+
+      & .timeline-item {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        gap: var(--space-m);
+        padding-bottom: var(--space-m);
+        border-bottom: 1px solid var(--border-subtle);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        & .timeline-date {
+          font-size: var(--step--1);
+          color: var(--text-brand);
+          font-weight: 600;
+        }
+
+        & .timeline-content {
+          & h4 {
+            font-size: var(--step-1);
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+          }
+
+          & .timeline-role {
+            font-size: var(--step--1);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xs);
+          }
+
+          & p {
+            font-size: var(--step--1);
+            color: var(--text-secondary);
+            line-height: 1.5;
+          }
+        }
+      }
+    }
+
+    /* ==========================================================================
+       10. ACCESSIBLE MODAL DETAIL DIALOG
+       ========================================================================== */
+    .project-modal {
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      background-color: var(--bg-surface-elevated);
+      color: var(--text-primary);
+      padding: var(--space-l);
+      max-width: 680px;
+      width: calc(100% - 2rem);
+      margin: auto;
+      box-shadow: var(--shadow-md);
+
+      &::backdrop {
+        background-color: oklch(0 0 0 / 0.65);
+        backdrop-filter: blur(8px);
+      }
+
+      & .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: var(--space-s);
+
+        & h3 {
+          font-size: var(--step-2);
+          letter-spacing: -0.02em;
+        }
+      }
+
+      & .modal-close {
+        padding: 0.5rem;
+        border-radius: var(--radius-sm);
+        color: var(--text-secondary);
+        display: grid;
+        place-items: center;
+
+        &:hover {
+          color: var(--text-primary);
+          background-color: var(--bg-surface);
+        }
+      }
+
+      & .modal-category {
+        font-size: var(--step--1);
+        color: var(--text-brand);
+        font-weight: 600;
+        margin-bottom: var(--space-xs);
+      }
+
+      & .modal-body-text {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: var(--space-m);
+        font-size: var(--step-0);
+      }
+
+      & .modal-spec-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-s);
+        margin-bottom: var(--space-m);
+        padding: var(--space-s);
+        background-color: var(--bg-canvas);
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border-subtle);
+
+        & .spec-pair {
+          & .spec-key {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+          }
+          & .spec-val {
+            font-size: var(--step--1);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+          }
+        }
+      }
+
+      & .modal-code-sample {
+        background-color: var(--bg-canvas);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-sm);
+        padding: var(--space-s);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: var(--step--1);
+        color: var(--text-secondary);
+        margin-bottom: var(--space-l);
+        overflow-x: auto;
+      }
+    }
+
+    /* ==========================================================================
+       11. SITE FOOTER
+       ========================================================================== */
+    .site-footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border-subtle);
+      background-color: var(--bg-surface);
+      padding: var(--space-l) var(--space-m);
+      transition: var(--transition-theme);
+
+      & .footer-container {
+        max-width: var(--max-width);
+        margin-inline: auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-m);
+      }
+
+      & .footer-meta {
+        color: var(--text-tertiary);
+        font-size: var(--step--1);
+      }
+
+      & .footer-links {
+        display: flex;
+        gap: var(--space-m);
+
+        & a {
+          color: var(--text-secondary);
+          font-size: var(--step--1);
+          transition: color var(--transition-base);
+
+          &:hover {
+            color: var(--text-primary);
+          }
+        }
+      }
+    }
+
+    /* ==========================================================================
+       12. RESPONSIVE BREAKDOWN & MOTION SENSITIVITY
+       ========================================================================== */
+    @media (max-width: 992px) {
+      .bento-card.col-8,
+      .bento-card.col-4,
+      .bento-card.col-6 {
+        grid-column: span 12;
+      }
+
+      .hero .hero-kpi-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .mobile-nav-toggle {
+        display: flex;
+      }
+
+      .site-header .nav-links {
+        position: fixed;
+        inset: 60px 0 auto 0;
+        background-color: var(--bg-surface);
+        border-bottom: 1px solid var(--border-subtle);
+        flex-direction: column;
+        padding: var(--space-l);
+        gap: var(--space-m);
+        transform: translateY(-150%);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: var(--shadow-md);
+
+        &.is-active {
+          transform: translateY(0);
+        }
+      }
+
+      .hero .hero-kpi-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline .timeline-item {
+        grid-template-columns: 1fr;
+        gap: var(--space-xs);
+      }
+    }
+
+    /* WCAG Prefers Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       HEADER & NAVIGATION (Flexbox 3-Zone Contract)
+       ========================================================================== -->
+  <header class="site-header">
+    <div class="nav-container">
+      <!-- Zone 1: Wordmark -->
+      <a href="#hero" class="brand-signature" aria-label="Alex Rivera Portfolio Home">
+        <span class="brand-glyph" aria-hidden="true">AR</span>
+        <span>Alex Rivera</span>
+      </a>
+
+      <!-- Zone 2: Navigation Links -->
+      <nav aria-label="Primary Navigation">
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#showcase">Architecture Bento</a></li>
+          <li><a href="#resizer-section">Container Lab</a></li>
+          <li><a href="#matrix">Engine Matrix</a></li>
+          <li><a href="#experience">Track Record</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Zone 3: Actions -->
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle visual theme mode">
+          <!-- Sun Icon for Dark Mode -->
+          <svg class="sun-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <!-- Moon Icon for Light Mode -->
+          <svg class="moon-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <button class="btn btn-secondary btn-sm" id="blueprintBtn">
+          System Blueprint
+        </button>
+
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation drawer" aria-expanded="false">
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ==========================================================================
+         HERO SECTION
+         ========================================================================== -->
+    <section class="hero" id="hero">
+      <div class="status-pill">
+        <span class="status-text">Available for Staff & Principal Consulting · Q4 2026</span>
+      </div>
+
+      <h1 class="hero-title">
+        Engineering resilient <span class="gradient-text">design systems</span> & ultra-scale frontends.
+      </h1>
+
+      <p class="hero-lead">
+        Specializing in CSS architecture, browser rendering runtime optimization, and enterprise token pipelines with zero layout shifts.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#showcase" class="btn btn-primary">Explore Architecture Bento</a>
+        <a href="#resizer-section" class="btn btn-secondary">Test Container Queries</a>
+      </div>
+
+      <!-- KPI Proof Strip -->
+      <div class="hero-kpi-strip">
+        <div class="kpi-item">
+          <div class="kpi-value">64%</div>
+          <div class="kpi-label">CSS Footprint Reduction via Modern Token Engine</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-value">0.38s</div>
+          <div class="kpi-label">LCP Production Median Across 42 Enterprise Routes</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-value">100%</div>
+          <div class="kpi-label">WCAG AAA Contrast Ratio in Both Color Modes</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-value">14.8k</div>
+          <div class="kpi-label">Weekly OSS Downloads for Token AST Compiler</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         PROJECT SHOWCASE (Bento-box Grid with Container Queries & Spotlights)
+         ========================================================================== -->
+    <section class="section-wrap" id="showcase">
+      <div class="section-header">
+        <div class="section-tag">Featured Architectures</div>
+        <h2 class="section-title">Production Systems & Benchmarks</h2>
+      </div>
+
+      <!-- Filter Bar Controls -->
+      <div class="filter-bar" role="tablist" aria-label="Project Categories">
+        <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All Initiatives</button>
+        <button class="filter-btn" data-filter="systems" role="tab" aria-selected="false">Design Systems</button>
+        <button class="filter-btn" data-filter="performance" role="tab" aria-selected="false">Performance</button>
+        <button class="filter-btn" data-filter="tooling" role="tab" aria-selected="false">Tooling & Lab</button>
+      </div>
+
+      <div class="bento-grid" id="bentoContainer">
+
+        <!-- Bento 1: Flagship Design Engine (Span 8) -->
+        <article class="bento-card col-8" data-category="systems">
+          <div class="card-split">
+            <div>
+              <div class="card-meta-top">
+                <span class="category-label">Multi-Tenant Engine</span>
+                <span class="metric-badge">v3.4 Production</span>
+              </div>
+              <div class="card-body">
+                <h3>Pulse Design System Core</h3>
+                <p>Zero-runtime token engine based on native CSS custom properties, container queries, and atomic component composition across 14 enterprise applications.</p>
+                <div class="meta-row">
+                  <span>CSS Nesting</span>
+                  <span class="meta-dot">·</span>
+                  <span>Container Queries</span>
+                  <span class="meta-dot">·</span>
+                  <span>OKLCH Tokens</span>
+                  <span class="meta-dot">·</span>
+                  <span>Web Components</span>
+                </div>
+              </div>
+              <button class="card-action" onclick="openDeepDive('Pulse Design System Core', 'Design Systems', 'Pulse eliminated CSS bloat across 14 micro-frontends by introducing zero-runtime OKLCH tokens and native CSS nesting. It achieved a 64% reduction in total shipped stylesheet bytes and guarantees 100% WCAG AAA contrast ratio programmatically.', '64% Shipped CSS Delta | 14 Apps Powered | 0ms Runtime Overhead', '/* Token declaration sample */\n:root {\n  --color-brand-hue: 255;\n  --color-brand: oklch(0.68 0.22 var(--color-brand-hue));\n  --bg-surface-glass: color-mix(in oklch, var(--bg-surface) 75%, transparent);\n}')">
+                Inspect Specs
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="mockup-frame" aria-hidden="true">
+              <div class="mockup-bar">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="code-line"><span class="keyword">@container</span> bento-card (<span class="property">min-width</span>: 500px) {</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="property">display</span>: grid;</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="property">grid-template-columns</span>: 1.25fr 1fr;</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="property">gap</span>: var(--space-m);</div>
+              <div class="code-line">}</div>
+              <div class="code-line"><span class="keyword">--bg-glass</span>: color-mix(in oklch, ...);</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Bento 2: Performance Audit Metrics (Span 4) -->
+        <article class="bento-card col-4" data-category="performance">
+          <div>
+            <div class="card-meta-top">
+              <span class="category-label">Core Web Vitals</span>
+              <span class="metric-badge">CrUX 75th %ile</span>
+            </div>
+            <div class="card-body">
+              <div class="metric-display">0.38s</div>
+              <h3>LCP Production Median</h3>
+              <p>Eliminated layout shifts and render blocking via critical path container partitioning.</p>
+              <div class="metric-grid">
+                <div class="metric-sub">
+                  <div class="val">&lt; 32ms</div>
+                  <div class="lbl">Interaction to Next Paint</div>
+                </div>
+                <div class="metric-sub">
+                  <div class="val">0.00</div>
+                  <div class="lbl">Cumulative Layout Shift</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="card-action" onclick="openDeepDive('Core Web Vitals Runtime Optimization', 'Performance', 'Engineered critical path CSS layers and decoupled composite animations to run exclusively on the GPU compositor thread. Promoted critical hero containers to hardware planes with will-change, eliminating main-thread contention during route hydration.', 'LCP: 0.38s | INP: 28ms | CLS: 0.000 | Lighthouse: 100/100', '/* Compositor layer isolation */\n.critical-viewport-anchor {\n  content-visibility: auto;\n  contain-intrinsic-size: 0 480px;\n  transform: translateZ(0);\n  will-change: transform, opacity;\n}')">
+            Audit Breakdown
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </button>
+        </article>
+
+        <!-- Bento 3: Open Source Compiler (Span 4) -->
+        <article class="bento-card col-4" data-category="tooling">
+          <div>
+            <div class="card-meta-top">
+              <span class="category-label">OSS Tooling</span>
+              <span class="metric-badge">MIT Licensed</span>
+            </div>
+            <div class="card-body">
+              <h3>TokenMorph Compiler</h3>
+              <p>AST-based CSS extractor generating strongly-typed TypeScript interfaces directly from design token declarations.</p>
+              <div class="meta-row">
+                <span>TypeScript</span>
+                <span class="meta-dot">·</span>
+                <span>PostCSS AST</span>
+                <span class="meta-dot">·</span>
+                <span>14.8k dl/mo</span>
+              </div>
+            </div>
+          </div>
+          <button class="card-action" onclick="openDeepDive('TokenMorph AST Compiler', 'Tooling', 'An open-source Node/PostCSS engine that parses CSS custom properties and emits typed .d.ts token definitions, validating contrast thresholds at build time and warning engineers of hardcoded hex values in pull requests.', '14.8k Weekly Downloads | 2.1k GitHub Stars | Zero-Config CLI', 'export interface DesignTokens {\n  colorBrand: `oklch(${number} ${number} ${number})`;\n  bgSurface: string;\n  spacing: Record<\'xs\' | \'s\' | \'m\' | \'l\' | \'xl\', string>;\n}')">
+            Inspect Compiler Spec
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </button>
+        </article>
+
+        <!-- Bento 4: Subgrid Dashboard (Span 8) -->
+        <article class="bento-card col-8" data-category="systems">
+          <div class="card-split">
+            <div>
+              <div class="card-meta-top">
+                <span class="category-label">Grid Level 2</span>
+                <span class="metric-badge">CSS Subgrid</span>
+              </div>
+              <div class="card-body">
+                <h3>Subgrid Dynamic Dashboard</h3>
+                <p>Nested macro-to-micro layout aligning deeply integrated widget items along shared parent track lines without JavaScript measurement loops or resize listeners.</p>
+                <div class="meta-row">
+                  <span>grid-template-rows: subgrid</span>
+                  <span class="meta-dot">·</span>
+                  <span>Zero JS Reflows</span>
+                  <span class="meta-dot">·</span>
+                  <span>Fluid Intrinsic Sizing</span>
+                </div>
+              </div>
+              <button class="card-action" onclick="openDeepDive('CSS Subgrid Macro Alignment', 'Design Systems', 'By relying on CSS Grid Level 2 subgrid, cards nested deep inside widget components inherit row baselines directly from the parent dashboard grid, ensuring headers, charts, and action footers align seamlessly across dynamic text lengths without measuring DOM heights.', '0 Resize Listeners | 100% Fluid Tracks | Subgrid L2 Spec', '.parent-dashboard-grid {\n  display: grid;\n  grid-template-rows: auto 1fr auto;\n}\n.nested-widget-card {\n  grid-row: span 3;\n  display: grid;\n  grid-template-rows: subgrid;\n}')">
+                View Architecture Spec
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="mockup-frame" aria-hidden="true">
+              <div class="mockup-bar">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="code-line"><span class="property">.widget-wrapper</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="property">grid-row</span>: span 3;</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="property">display</span>: grid;</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="property">grid-template-rows</span>: <span class="keyword">subgrid</span>;</div>
+              <div class="code-line">}</div>
+              <div class="code-line" style="margin-top: 6px; color: var(--color-brand); font-weight: 600;">
+                /* Aligns headers &amp; footers across siblings */
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Bento 5: Interactive Container Query Resizer Lab (Span 6) -->
+        <article class="bento-card col-6" data-category="tooling" id="resizer-section">
+          <div>
+            <div class="card-meta-top">
+              <span class="category-label">Interactive Lab</span>
+              <span class="metric-badge">@container in Action</span>
+            </div>
+            <div class="card-body">
+              <h3>Container Queries Live Playground</h3>
+              <p>Drag the slider below to resize the container boundary. Observe how the inner card rearranges its layout purely based on its own width.</p>
+            </div>
+
+            <div class="interactive-resizer-wrap">
+              <div class="resizer-toolbar">
+                <label class="slider-label" for="containerSlider">
+                  <span>Width:</span>
+                  <span id="sliderWidthVal" style="font-weight: 700; color: var(--color-brand); font-variant-numeric: tabular-nums;">520px</span>
+                </label>
+                <div class="preset-buttons">
+                  <button class="btn btn-secondary btn-sm" onclick="setContainerWidth(320)">320px</button>
+                  <button class="btn btn-secondary btn-sm" onclick="setContainerWidth(480)">480px</button>
+                  <button class="btn btn-secondary btn-sm" onclick="setContainerWidth(620)">620px</button>
+                </div>
+              </div>
+
+              <input type="range" id="containerSlider" min="280" max="620" value="520" style="width: 100%;" />
+
+              <div class="resizable-sandbox-container" id="sandboxContainer" style="width: 520px;">
+                <div class="responsive-demo-card">
+                  <div class="demo-content">
+                    <div class="demo-header">
+                      <span>Responsive Component</span>
+                      <span class="demo-badge">@container</span>
+                    </div>
+                    <h4>Adaptive Card Layout</h4>
+                    <p>Shifts from vertical column to horizontal flex row when width &ge; 440px.</p>
+                  </div>
+                  <button class="btn btn-primary btn-sm">Action</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="card-action" onclick="openDeepDive('Container Query Architecture', 'Tooling', 'Container queries decouple UI components from the page viewport, enabling true modular composition where design elements dynamically adapt to their allocated slot width in any layout.', 'Zero Window Resize Handlers | Pure CSS Layout | High Composability', '@container demo-card (min-width: 440px) {\n  .responsive-demo-card {\n    flex-direction: row;\n    align-items: center;\n    justify-content: space-between;\n  }\n}')">
+            Container Query Pattern
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </button>
+        </article>
+
+        <!-- Bento 6: Live OKLCH & CSS Variables Synthesizer (Span 6) -->
+        <article class="bento-card col-6" data-category="systems">
+          <div>
+            <div class="card-meta-top">
+              <span class="category-label">Dynamic Tokens</span>
+              <span class="metric-badge">OKLCH Cascading</span>
+            </div>
+            <div class="card-body">
+              <h3>Live CSS Variables Synthesizer</h3>
+              <p>Tune the global hue variable in real time to see the entire portfolio's color scheme update dynamically via CSS custom properties.</p>
+            </div>
+
+            <div class="token-synthesizer">
+              <div class="token-control-row">
+                <div class="token-meta">
+                  <span>--color-brand-hue</span>
+                  <span class="val" id="hueVal">255° (Indigo)</span>
+                </div>
+                <input type="range" id="hueSlider" min="0" max="360" value="255" />
+              </div>
+
+              <div class="token-control-row">
+                <div class="token-meta">
+                  <span>--radius-md scale</span>
+                  <span class="val" id="radiusVal">14px</span>
+                </div>
+                <input type="range" id="radiusSlider" min="4" max="28" value="14" />
+              </div>
+
+              <div class="palette-preview-strip" id="palettePreview">
+                <div class="swatch" style="background-color: var(--color-brand);"></div>
+                <div class="swatch" style="background-color: var(--color-brand-hover);"></div>
+                <div class="swatch" style="background-color: var(--color-accent);"></div>
+                <div class="swatch" style="background-color: var(--border-accent);"></div>
+                <div class="swatch" style="background-color: var(--bg-surface-elevated);"></div>
+              </div>
+            </div>
+          </div>
+          <button class="card-action" onclick="openDeepDive('OKLCH Color Space & Dynamic Theming', 'Design Systems', 'The OKLCH color model delivers uniform perceived brightness across all hues. Coupled with CSS custom properties and color-mix(), a single hue parameter can generate an entire accessible palette without static color lookups.', 'Perceptual Uniformity | Dynamic Contrast Safety | 0.04 Chroma Stability', ':root {\n  --color-brand-hue: 255;\n  --color-brand: oklch(0.68 0.22 var(--color-brand-hue));\n  --color-brand-hover: oklch(0.74 0.22 var(--color-brand-hue));\n}')">
+            Color Math Specs
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </button>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         TECHNICAL ENGINE MATRIX
+         ========================================================================== -->
+    <section class="section-wrap" id="matrix">
+      <div class="section-header">
+        <div class="section-tag">Core Competencies</div>
+        <h2 class="section-title">Browser Engine &amp; Architectural Principles</h2>
+      </div>
+
+      <div class="arch-specs">
+        <div class="spec-card">
+          <h4>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="var(--color-brand)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            Token Architecture
+          </h4>
+          <p>Semantic naming schemes, runtime dynamic switches via OKLCH/color-mix, and hierarchical inheritance models with zero bundle duplication.</p>
+        </div>
+
+        <div class="spec-card">
+          <h4>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="var(--color-brand)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Rendering Pipeline
+          </h4>
+          <p>GPU layer compositing (`will-change`, transform3d), layout thriftiness, and avoiding forced synchronous layouts and layout thrashing.</p>
+        </div>
+
+        <div class="spec-card">
+          <h4>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="var(--color-brand)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            A11y &amp; Device Matrix
+          </h4>
+          <p>Automated WCAG 2.2 AAA validation, adaptive fluid scaling curves, high contrast fallbacks, and motion sensitivity gates.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         TRACK RECORD & TIMELINE
+         ========================================================================== -->
+    <section class="section-wrap" id="experience">
+      <div class="section-header">
+        <div class="section-tag">Track Record</div>
+        <h2 class="section-title">Leadership &amp; Systems Engineering</h2>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">2023 — Present</div>
+          <div class="timeline-content">
+            <h4>Principal Frontend Systems Architect</h4>
+            <div class="timeline-role">HyperScale Technologies · Remote</div>
+            <p>Directing the architectural evolution of 14 core enterprise web applications. Led migration to modern CSS nesting, container queries, and subgrid, slashing 64% of shipped CSS bytes and maintaining sub-40ms INP across all user touchpoints.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2021 — 2023</div>
+          <div class="timeline-content">
+            <h4>Staff Design Technologist</h4>
+            <div class="timeline-role">Vanguard Design Systems · San Francisco, CA</div>
+            <p>Authored the zero-runtime design tokens pipeline adopted across 80+ software engineers. Built automated CI contrast verification and linting tools preventing non-token values from reaching production branches.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2018 — 2021</div>
+          <div class="timeline-content">
+            <h4>Senior Frontend Engineer</h4>
+            <div class="timeline-role">CloudVector Web Platforms · New York, NY</div>
+            <p>Refactored legacy single-page application rendering bottlenecks, elevating Google Core Web Vitals to the top 5th percentile across financial dashboards.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       MODAL INSPECTION DIALOG
+       ========================================================================== -->
+  <dialog class="project-modal" id="projectModal" aria-labelledby="modalTitle">
+    <div class="modal-header">
+      <div>
+        <div class="modal-category" id="modalCategory">Technical Specification</div>
+        <h3 id="modalTitle">Technical Specification</h3>
+      </div>
+      <button class="modal-close" onclick="closeDeepDive()" aria-label="Close dialog window">
+        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <p class="modal-body-text" id="modalDescription"></p>
+
+    <div class="modal-spec-grid">
+      <div class="spec-pair">
+        <div class="spec-key">Metrics &amp; Impact</div>
+        <div class="spec-val" id="modalMetrics">—</div>
+      </div>
+      <div class="spec-pair">
+        <div class="spec-key">Architecture Tier</div>
+        <div class="spec-val">L1 Production Verified</div>
+      </div>
+    </div>
+
+    <div class="modal-code-sample" id="modalCodeSample">
+      <code>/* Loading code sample... */</code>
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; gap: var(--space-s);">
+      <button class="btn btn-secondary" onclick="closeDeepDive()">Dismiss</button>
+    </div>
+  </dialog>
+
+  <!-- ==========================================================================
+       SITE FOOTER
+       ========================================================================== -->
+  <footer class="site-footer" id="contact">
+    <div class="footer-container">
+      <div>
+        <div class="brand-signature" style="font-size: var(--step-0);">
+          <span class="brand-glyph" aria-hidden="true" style="width: 20px; height: 20px; font-size: 10px;">AR</span>
+          <span>Alex Rivera</span>
+        </div>
+        <p class="footer-meta">Principal Frontend Systems Architect · Advanced CSS3 Architecture</p>
+      </div>
+
+      <div class="footer-links">
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="mailto:alex.rivera@example.com">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       VANILLA SCRIPT: CONTROLLERS & INTERACTION
+       ========================================================================== -->
+  <script>
+    // 1. Persistent Dark / Light Theme Controller
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const htmlElement = document.documentElement;
+
+    function applyTheme(theme) {
+      htmlElement.setAttribute('data-theme', theme);
+      try {
+        localStorage.setItem('portfolio-theme', theme);
+      } catch (e) {}
+    }
+
+    // Initialize from storage or system preference
+    const storedTheme = (() => {
+      try { return localStorage.getItem('portfolio-theme'); } catch (e) { return null; }
+    })();
+
+    if (storedTheme) {
+      applyTheme(storedTheme);
+    } else {
+      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+      applyTheme(prefersLight ? 'light' : 'dark');
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = htmlElement.getAttribute('data-theme');
+      const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      applyTheme(targetTheme);
+    });
+
+    // 2. Bento Card Mouse-Tracking Spotlight Effect
+    document.querySelectorAll('.bento-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+
+    // 3. Mobile Navigation Drawer Controls
+    const mobileToggle = document.getElementById('mobileNavToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    if (mobileToggle && navLinks) {
+      mobileToggle.addEventListener('click', () => {
+        const isExpanded = mobileToggle.getAttribute('aria-expanded') === 'true';
+        mobileToggle.setAttribute('aria-expanded', !isExpanded);
+        navLinks.classList.toggle('is-active');
+      });
+
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('is-active');
+          mobileToggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+
+    // 4. Modal Deep-Dive Controller
+    const modal = document.getElementById('projectModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalCategory = document.getElementById('modalCategory');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalMetrics = document.getElementById('modalMetrics');
+    const modalCodeSample = document.getElementById('modalCodeSample');
+    const blueprintBtn = document.getElementById('blueprintBtn');
+
+    function openDeepDive(title, category, description, metrics, codeSample) {
+      modalTitle.textContent = title;
+      modalCategory.textContent = category || 'System Architecture';
+      modalDescription.textContent = description;
+      modalMetrics.textContent = metrics || 'Production Verified';
+      if (modalCodeSample && codeSample) {
+        modalCodeSample.innerHTML = `<pre><code>${escapeHtml(codeSample)}</code></pre>`;
+      }
+      modal.showModal();
+    }
+
+    function closeDeepDive() {
+      modal.close();
+    }
+
+    if (blueprintBtn) {
+      blueprintBtn.addEventListener('click', () => {
+        openDeepDive(
+          'OmniDesign Global Architecture Blueprint',
+          'Enterprise Architecture',
+          'Unified multi-tier CSS architecture combining OKLCH dynamic tokens, fluid typography clamp curves, subgrid track inheritance, and component-scoped container queries for 14 enterprise micro-frontends.',
+          '64% Less CSS | 100% WCAG AAA | Zero JS Reflows',
+          ':root {\n  --color-brand-hue: 255;\n  --color-brand: oklch(0.68 0.22 var(--color-brand-hue));\n  --step-0: clamp(0.95rem, 0.88rem + 0.35vw, 1.125rem);\n}\n\n@container (min-width: 500px) {\n  .bento-card-inner { display: grid; grid-template-columns: 1fr 1fr; }\n}'
+        );
+      });
+    }
+
+    function escapeHtml(text) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    // Close when clicking modal backdrop
+    modal.addEventListener('click', e => {
+      const rect = modal.getBoundingClientRect();
+      if (
+        e.clientX < rect.left ||
+        e.clientX > rect.right ||
+        e.clientY < rect.top ||
+        e.clientY > rect.bottom
+      ) {
+        modal.close();
+      }
+    });
+
+    // 5. Category Filter Bar
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const bentoCards = document.querySelectorAll('.bento-card');
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+
+        const filter = btn.getAttribute('data-filter');
+        bentoCards.forEach(card => {
+          const category = card.getAttribute('data-category');
+          if (filter === 'all' || category === filter) {
+            card.classList.remove('is-hidden');
+          } else {
+            card.classList.add('is-hidden');
+          }
+        });
+      });
+    });
+
+    // 6. Interactive Container Query Resizer Lab
+    const containerSlider = document.getElementById('containerSlider');
+    const sliderWidthVal = document.getElementById('sliderWidthVal');
+    const sandboxContainer = document.getElementById('sandboxContainer');
+
+    function setContainerWidth(val) {
+      if (sandboxContainer) sandboxContainer.style.width = val + 'px';
+      if (sliderWidthVal) sliderWidthVal.textContent = val + 'px';
+      if (containerSlider) containerSlider.value = val;
+    }
+
+    if (containerSlider) {
+      containerSlider.addEventListener('input', e => {
+        setContainerWidth(e.target.value);
+      });
+    }
+
+    // 7. Live Token Synthesizer (OKLCH Hue & Radius Controls)
+    const hueSlider = document.getElementById('hueSlider');
+    const hueVal = document.getElementById('hueVal');
+    const radiusSlider = document.getElementById('radiusSlider');
+    const radiusVal = document.getElementById('radiusVal');
+
+    function getHueName(hue) {
+      const h = parseInt(hue, 10);
+      if (h < 30 || h >= 330) return 'Rose / Crimson';
+      if (h < 70) return 'Amber / Ochre';
+      if (h < 150) return 'Emerald / Lime';
+      if (h < 210) return 'Teal / Cyan';
+      if (h < 280) return 'Indigo / Sapphire';
+      return 'Violet / Purple';
+    }
+
+    if (hueSlider) {
+      hueSlider.addEventListener('input', e => {
+        const val = e.target.value;
+        document.documentElement.style.setProperty('--color-brand-hue', val);
+        if (hueVal) hueVal.textContent = `${val}° (${getHueName(val)})`;
+      });
+    }
+
+    if (radiusSlider) {
+      radiusSlider.addEventListener('input', e => {
+        const val = e.target.value;
+        document.documentElement.style.setProperty('--radius-md', val + 'px');
+        document.documentElement.style.setProperty('--radius-lg', (parseInt(val, 10) + 10) + 'px');
+        if (radiusVal) radiusVal.textContent = val + 'px';
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "CSS Architecture & Systems Portfolio",
+  "description": "Production-grade responsive developer portfolio with advanced CSS3, Bento-box Grid, Container Queries, OKLCH tokens, fluid typography, and dynamic theming.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
